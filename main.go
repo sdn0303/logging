@@ -29,7 +29,7 @@ type Logger struct {
 func GetLogger() LoggerIFace {
 	once.Do(func() {
 		logger = &Logger{
-			CallDepth: 2,
+			CallDepth: 3,
 			logger:    log.New(os.Stderr, "", log.Lshortfile|log.Ldate|log.Ltime),
 		}
 	})
