@@ -1,32 +1,30 @@
 package logging
 
 import (
+	"fmt"
+	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-var l = GetLogger()
-
-func TestLogger_Info(t *testing.T) {
-
-	t.Run("info", func(t *testing.T) {
-		l.Info("Hello, World")
-	})
+func getInstance(ch chan *Logger) {
+	l := GetLogger()
+	ch <- &l
 }
 
-func TestLogger_Debug(t *testing.T) {
-	t.Run("debug", func(t *testing.T) {
-		l.Debug("Hello, World")
-	})
-}
+func TestLogger_Logging(t *testing.T) {
+	t.Run("Is singleton", func(t *testing.T) {
 
-func TestLogger_Warning(t *testing.T) {
-	t.Run("warning", func(t *testing.T) {
-		l.Warn("Hello, World")
-	})
-}
+		ch1 := make(chan *Logger)
+		ch2 := make(chan *Logger)
+		go getInstance(ch1)
+		go getInstance(ch2)
+		l1 := <-ch1
+		l2 := <-ch2
 
-func TestLogger_Error(t *testing.T) {
-	t.Run("error", func(t *testing.T) {
-		l.Error("Hello, World")
+		res := reflect.DeepEqual(&l1, &l2)
+		fmt.Println(fmt.Sprintf("Is same object: %v", res))
+		assert.Equal(t, res, true)
 	})
 }

@@ -10,50 +10,50 @@ import (
 )
 
 var (
-	logger LoggerIFace = &Logger{}
-	once   sync.Once
+	instance *logger
+	once     sync.Once
 )
 
-type LoggerIFace interface {
+type Logger interface {
 	Info(v ...interface{})
 	Debug(v ...interface{})
 	Warn(v ...interface{})
 	Error(v ...interface{})
 }
 
-type Logger struct {
-	CallDepth int
+type logger struct {
+	callDepth int
 	logger    *log.Logger
 }
 
-func GetLogger() LoggerIFace {
+func GetLogger() Logger {
 	once.Do(func() {
-		logger = &Logger{
-			CallDepth: 3,
+		instance = &logger{
+			callDepth: 3,
 			logger:    log.New(os.Stderr, "", log.Lshortfile|log.Ldate|log.Ltime),
 		}
 	})
-	return logger
+	return instance
 }
 
-func (l *Logger) output(p string, v ...interface{}) {
-	if err := l.logger.Output(l.CallDepth, fmt.Sprintf("%s %s", p, fmt.Sprintln(v...))); err != nil {
+func (l *logger) output(p string, v ...interface{}) {
+	if err := l.logger.Output(l.callDepth, fmt.Sprintf("%s %s", p, fmt.Sprintln(v...))); err != nil {
 		panic(err)
 	}
 }
 
-func (l *Logger) Info(v ...interface{}) {
+func (l *logger) Info(v ...interface{}) {
 	l.output(color.New(color.Bold, color.FgGreen).Sprint("💡 [INFO]     "), v...)
 }
 
-func (l *Logger) Debug(v ...interface{}) {
+func (l *logger) Debug(v ...interface{}) {
 	l.output(color.New(color.Bold, color.FgCyan).Sprint("👀 [DEBUG]    "), v...)
 }
 
-func (l *Logger) Warn(v ...interface{}) {
+func (l *logger) Warn(v ...interface{}) {
 	l.output(color.New(color.Bold, color.FgYellow).Sprint("⚡  [WARNING] ️"), v...)
 }
 
-func (l *Logger) Error(v ...interface{}) {
+func (l *logger) Error(v ...interface{}) {
 	l.output(color.New(color.Bold, color.FgRed).Sprintf("💢 [ERROR]    "), v...)
 }
