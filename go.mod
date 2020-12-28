@@ -1,4 +1,4 @@
-module github.com/sdn0303/Logging
+module github.com/sdn0303/logging
 
 go 1.14
 
