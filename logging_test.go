@@ -10,6 +10,7 @@ import (
 
 func getInstance(ch chan *Logger) {
 	l := GetLogger()
+	l.Info("Create Instance")
 	ch <- &l
 }
 

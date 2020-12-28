@@ -15,10 +15,10 @@ var (
 )
 
 type Logger interface {
-	Info(v ...interface{})
-	Debug(v ...interface{})
-	Warn(v ...interface{})
-	Error(v ...interface{})
+	Info(format string, v ...interface{})
+	Debug(format string, v ...interface{})
+	Warn(format string, v ...interface{})
+	Error(format string, v ...interface{})
 }
 
 type logger struct {
@@ -36,24 +36,24 @@ func GetLogger() Logger {
 	return instance
 }
 
-func (l *logger) output(p string, v ...interface{}) {
-	if err := l.logger.Output(l.callDepth, fmt.Sprintf("%s %s", p, fmt.Sprintln(v...))); err != nil {
+func (l *logger) output(p, format string, v ...interface{}) {
+	if err := l.logger.Output(l.callDepth, fmt.Sprintf("%s %s %s", p, format, fmt.Sprintln(v...))); err != nil {
 		panic(err)
 	}
 }
 
-func (l *logger) Info(v ...interface{}) {
-	l.output(color.New(color.Bold, color.FgGreen).Sprint("💡 [INFO]     "), v...)
+func (l *logger) Info(format string, v ...interface{}) {
+	l.output(color.New(color.Bold, color.FgGreen).Sprint("[INFO]"), format, v...)
 }
 
-func (l *logger) Debug(v ...interface{}) {
-	l.output(color.New(color.Bold, color.FgCyan).Sprint("👀 [DEBUG]    "), v...)
+func (l *logger) Debug(format string, v ...interface{}) {
+	l.output(color.New(color.Bold, color.FgCyan).Sprint("[DEBUG]"), format, v...)
 }
 
-func (l *logger) Warn(v ...interface{}) {
-	l.output(color.New(color.Bold, color.FgYellow).Sprint("⚡  [WARNING] ️"), v...)
+func (l *logger) Warn(format string, v ...interface{}) {
+	l.output(color.New(color.Bold, color.FgYellow).Sprint("[WARNING]"), format, v...)
 }
 
-func (l *logger) Error(v ...interface{}) {
-	l.output(color.New(color.Bold, color.FgRed).Sprintf("💢 [ERROR]    "), v...)
+func (l *logger) Error(format string, v ...interface{}) {
+	l.output(color.New(color.Bold, color.FgRed).Sprintf("[ERROR]"), format, v...)
 }
