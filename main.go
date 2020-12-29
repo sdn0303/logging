@@ -37,7 +37,7 @@ func GetLogger() Logger {
 }
 
 func (l *logger) output(p, format string, v ...interface{}) {
-	if err := l.logger.Output(l.callDepth, fmt.Sprintf("%s %s %s", p, format, fmt.Sprintln(v...))); err != nil {
+	if err := l.logger.Output(l.callDepth, fmt.Sprintf(p+format, v...)); err != nil {
 		panic(err)
 	}
 }
