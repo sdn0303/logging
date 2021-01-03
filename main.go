@@ -26,11 +26,11 @@ type logger struct {
 	logger    *log.Logger
 }
 
-func GetLogger() Logger {
+func GetLogger(prefix string) Logger {
 	once.Do(func() {
 		instance = &logger{
 			callDepth: 3,
-			logger:    log.New(os.Stderr, "", log.Lshortfile|log.Ldate|log.Ltime),
+			logger:    log.New(os.Stderr, prefix, log.Lshortfile|log.Ldate|log.Ltime),
 		}
 	})
 	return instance
@@ -43,17 +43,17 @@ func (l *logger) output(p, format string, v ...interface{}) {
 }
 
 func (l *logger) Info(format string, v ...interface{}) {
-	l.output(color.New(color.Bold, color.FgGreen).Sprint("[INFO]"), format, v...)
+	l.output(color.New(color.Bold, color.FgGreen).Sprint("[INFO] "), format, v...)
 }
 
 func (l *logger) Debug(format string, v ...interface{}) {
-	l.output(color.New(color.Bold, color.FgCyan).Sprint("[DEBUG]"), format, v...)
+	l.output(color.New(color.Bold, color.FgCyan).Sprint("[DEBUG] "), format, v...)
 }
 
 func (l *logger) Warn(format string, v ...interface{}) {
-	l.output(color.New(color.Bold, color.FgYellow).Sprint("[WARNING]"), format, v...)
+	l.output(color.New(color.Bold, color.FgYellow).Sprint("[WARNING] "), format, v...)
 }
 
 func (l *logger) Error(format string, v ...interface{}) {
-	l.output(color.New(color.Bold, color.FgRed).Sprintf("[ERROR]"), format, v...)
+	l.output(color.New(color.Bold, color.FgRed).Sprintf("[ERROR] "), format, v...)
 }
